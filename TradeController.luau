@@ -325,7 +325,7 @@ end -- Concludes the TargetRemoveTower method.
 
 -- Removes the Weapon visual icon appearing in the other players offer
 -- following the removal of a weapon when the target deselects a weapon
-function TradeController:TargetRemoveWeapon(uniqueWeaponId) -- Defines a method to remove a specific weapon icon from the partner's offer UI by its unique ID.
+function TradeController:TargetRemoveWeapon(uniqueWeaponId: string) -- Defines a method to remove a specific weapon icon from the partner's offer UI by its unique ID.
 	local CollectionClone = self.OtherOfferPaddedFrame.OtherCollectionContainer:FindFirstChild(uniqueWeaponId) -- Searches the partner's offer container for a child UI element matching the uniqueWeaponId.
 	if CollectionClone then -- Verifies that the weapon UI clone exists before attempting destruction.
 		CollectionClone:Destroy() -- Destroys the weapon UI clone from the partner's offer container.
@@ -335,14 +335,14 @@ end -- Concludes the TargetRemoveWeapon method.
 
 -- Adds the tower visual icon appearing in the other players offer
 -- following the adding of a tower when the target selects a tower to be traded
-function TradeController:TargetAddTower(towerInstance) -- Defines a method to render a newly added tower in the trading partner's offer container.
+function TradeController:TargetAddTower(towerInstance: { [string]: self.TowerConfig.TowerInstance}) -- Defines a method to render a newly added tower in the trading partner's offer container.
 	self:GenerateTower(towerInstance, self.OtherOfferPaddedFrame.OtherCollectionContainer, false) -- Generates a non-clickable tower icon inside the partner's offer container.
 	self.TradeInfo.Target.SelectedTowers[towerInstance.UniqueTowerID] = towerInstance -- Records the tower data instance in the target player's SelectedTowers state table.
 end -- Concludes the TargetAddTower method.
 
 -- Adds the Weapon visual icon appearing in the other players offer
 -- following the adding of a weapon when the target selects a weapon to be traded
-function TradeController:TargetAddWeapon(weaponInstance) -- Defines a method to render a newly added weapon in the trading partner's offer container.
+function TradeController:TargetAddWeapon(weaponInstance: {[string]: self.WeaponConfig.WeaponInstance}) -- Defines a method to render a newly added weapon in the trading partner's offer container.
 	self:GenerateWeapon(weaponInstance, self.OtherOfferPaddedFrame.OtherCollectionContainer, false) -- Generates a non-clickable weapon icon inside the partner's offer container.
 	self.TradeInfo.Target.SelectedWeapons[weaponInstance.UniqueWeaponID] = weaponInstance -- Records the weapon data instance in the target player's SelectedWeapons state table.
 end -- Concludes the TargetAddWeapon method.
@@ -352,7 +352,7 @@ end -- Concludes the TargetAddWeapon method.
 -- following the adding of a tower when the client selects a tower to be traded (and once server validated)
 
 -- if not selected the tower visual destroyed -- client (self) removed tower from offer
-function TradeController:SelectTower(uniqueTowerId, isSelected) -- Defines a method to update the local inventory and offer UI when a tower's selection state changes.
+function TradeController:SelectTower(uniqueTowerId: string, isSelected: boolean?) -- Defines a method to update the local inventory and offer UI when a tower's selection state changes.
 	local TowerInstance = self.Data.TowerData[uniqueTowerId] -- Looks up the tower data object in the local player's TowerData dictionary using its unique ID.
 	if not TowerInstance then return end -- Aborts execution if the tower ID does not exist in the client's data table.
 
@@ -376,7 +376,7 @@ end -- Concludes the SelectTower method.
 -- following the adding of a weapon when the client selects a weapon to be traded (and once server validated)
 
 -- -- if not selected the weapon visual destroyed -- client (self) removed weapon from offer
-function TradeController:SelectWeapon(uniqueWeaponId, isSelected) -- Defines a method to update the local inventory and offer UI when a weapon's selection state changes.
+function TradeController:SelectWeapon(uniqueWeaponId: string, isSelected: boolean?) -- Defines a method to update the local inventory and offer UI when a weapon's selection state changes.
 	local WeaponInstance = self.Data.WeaponData[uniqueWeaponId] -- Retrieves the weapon's data table from the local player's WeaponData using its unique ID.
 	if not WeaponInstance then return end -- Returns early if the weapon data cannot be found in client state.
 
@@ -403,7 +403,7 @@ end -- Concludes the SelectWeapon method.
 -- we also update the state of the tradeInfo table following the remote event declaring the client and target states
 -- from the server
 
-function TradeController:Ready(isSelf: boolean, isReady: boolean) -- Defines a shared method to update ready status colors and state flags for either trade participant.
+function TradeController:Ready(isSelf: boolean?, isReady: boolean?) -- Defines a shared method to update ready status colors and state flags for either trade participant.
 	local TiteLabel = if isSelf then self.TitleLabel else self.OtherTitleLabel -- Selects either the local player's or partner's header label based on the isSelf boolean.
 	TiteLabel.ImageColor3 = if isReady then Color3.fromRGB(26, 255, 0) else Color3.fromRGB(255, 0, 0) -- Colors the header banner green if ready or red if unready.
 
@@ -419,7 +419,7 @@ end -- Concludes the Ready method.
 
 -- closes the TradeList which showcases who u can invite to trade once a trade has commenced
 -- this function can be thought as the master function for setting all the visuals for the trade sequence to begin
-function TradeController:InitialiseTrading(targetUserId) -- Defines the master setup method called when a trade session officially begins with a target player.
+function TradeController:InitialiseTrading(targetUserId: string) -- Defines the master setup method called when a trade session officially begins with a target player.
 	local TargetPlayer = Players:GetPlayerByUserId(targetUserId) -- Resolves the partner's Player instance from the Players service using their numerical UserId.
 	if not TargetPlayer then return end -- Aborts initialization if the target player has left the server.
 	self.HasConfirmed = false -- Resets the local confirmation state flag at the start of a fresh trade.
@@ -456,7 +456,7 @@ end -- Concludes the GenerateInventoryContainer method.
 
 
 -- function to generate individual weapon icon found in players inventory (that is tradeable)
-function TradeController:GenerateWeapon(weaponInstance, container, isInventory: boolean) -- Defines a factory method to clone, configure, and bind events for a weapon UI slot.
+function TradeController:GenerateWeapon(weaponInstance: { [string]: self.WeaponConfig.WeaponInstance}, container, isInventory: boolean) -- Defines a factory method to clone, configure, and bind events for a weapon UI slot.
 	local ConfigWeapon = self.WeaponConfig.GetConfig(weaponInstance.Model) -- Fetches static weapon configuration data (such as Rarity) using the weapon's model identifier.
 	local Clone = container.Template:Clone() -- Clones the hidden Template TextButton inside the target container.
 	Clone.Name = weaponInstance.UniqueWeaponID -- Assigns the weapon's UniqueWeaponID as the clone's instance Name for fast lookup.
@@ -516,7 +516,7 @@ function TradeController:GenerateWeapon(weaponInstance, container, isInventory: 
 end -- Concludes the GenerateWeapon method.
 
 -- function to generate individual Tower icon found in players inventory (that is tradeable)
-function TradeController:GenerateTower(towerInstance, container, isInventory: boolean) -- Defines a factory method to clone, configure, and bind events for a tower UI slot.
+function TradeController:GenerateTower(towerInstance: { [string]: self.TowerConfig.TowerInstance}, container: ScrollingFrame, isInventory: boolean) -- Defines a factory method to clone, configure, and bind events for a tower UI slot.
 	local ConfigTower = self.TowerConfig.GetConfig(towerInstance.Model) -- Retrieves static configuration data (such as Rarity) for the tower's model type.
 	local Clone = container.Template:Clone() -- Clones the invisible Template button inside the target container.
 	Clone.Name = towerInstance.UniqueTowerID -- Sets the clone's Name to the tower's UniqueTowerID for direct indexing.
@@ -568,7 +568,7 @@ function TradeController:GenerateTower(towerInstance, container, isInventory: bo
 end -- Concludes the GenerateTower method.
 
 -- Updates visuals of both the target player trade offer title + self offer title
-function TradeController:UpdateMainTitles(targetPlayer) -- Defines a method to initialize the header titles, status colors, and avatar thumbnails for both traders.
+function TradeController:UpdateMainTitles(targetPlayer:  Player) -- Defines a method to initialize the header titles, status colors, and avatar thumbnails for both traders.
 	self.HolderButtons.Accept.Title.Text = "Confirm" -- Resets the primary action button text to "Confirm" for the initial confirmation step.
 	local ImageSize = Enum.ThumbnailSize.Size420x420 -- Specifies the 420x420 pixel resolution enum for fetching player avatar thumbnails.
 	local ImageType = Enum.ThumbnailType.HeadShot -- Specifies the HeadShot thumbnail type enum to fetch a portrait of the player's avatar.
@@ -603,7 +603,7 @@ function TradeController:ReceiveResponse(userId: number, isAccept: boolean) -- D
 end -- Concludes the ReceiveResponse method.
 
 -- if target player sends trade request to the self player the server handles and sends a response to the self client
-function TradeController:ReceiveTradeRequest(userId) -- Defines a method to display the incoming trade invitation popup from another player.
+function TradeController:ReceiveTradeRequest(userId: number) -- Defines a method to display the incoming trade invitation popup from another player.
 	local PlayerWhoSent = Players:GetPlayerByUserId(userId) -- Looks up the sender's Player instance in the server using their UserId.
 	if not PlayerWhoSent then return end -- Ignores the request if the sending player has already left the game.
 	self.LastRequestReceived = userId -- Caches the sender's UserId so the Yes/No buttons know which player to respond to.
@@ -634,7 +634,7 @@ end -- Concludes the TradeSent method.
 
 -- function used to clean all elements of a weapon trade container or tower trade container
 -- except the Template of said container which is needed to act as a base for which each weapon/tower is cloned and shown
-function TradeController:CleanContainer(container) -- Defines a utility method to purge dynamically generated TextButtons from a UI container while preserving layout components.
+function TradeController:CleanContainer(container: ScrollingFrame) -- Defines a utility method to purge dynamically generated TextButtons from a UI container while preserving layout components.
 	for _, child in container:GetChildren() do -- Iterates through all direct child instances of the provided container Frame.
 		if child.Name == "Template" or not child:IsA("TextButton") then continue end -- Skips the reusable Template button and any non-button layout instances (like UIGridLayout).
 		child:Destroy() -- Destroys the dynamically generated item or player button clone.
@@ -661,7 +661,7 @@ function TradeController:InitialiseList() -- Defines a method to populate the tr
 end -- Concludes the InitialiseList method.
 
 -- function used to create a pop out effect when trade menu opens + adds blur effect aswell
-function TradeController:ShowShop(shop, shopScale) -- Defines a UI transition method to animate opening a menu frame with an elastic pop-out and camera blur.
+function TradeController:ShowShop(shop: Frame, shopScale: number) -- Defines a UI transition method to animate opening a menu frame with an elastic pop-out and camera blur.
 	self.OpenListState = true -- Sets the state flag to true indicating the player list menu is open.
 	if self._openTween then self._openTween:Cancel() end -- Cancels any currently running open tween to avoid conflicting scale interpolations.
 	local Blur = self.Camera:FindFirstChild("Blur") or Instance.new("BlurEffect") -- Retrieves the existing BlurEffect from the Camera or instantiates a new one if absent.
@@ -676,7 +676,7 @@ function TradeController:ShowShop(shop, shopScale) -- Defines a UI transition me
 end -- Concludes the ShowShop method.
 
 -- function used to create a pop in effect when trade menu closes + blur effect is removed
-function TradeController:HideShop(shop, shopScale) -- Defines a UI transition method to animate closing a menu frame and disabling the camera blur.
+function TradeController:HideShop(shop: Frame, shopScale: number) -- Defines a UI transition method to animate closing a menu frame and disabling the camera blur.
 	self.OpenListState = false -- Sets the state flag to false indicating the player list menu is closed.
 	if self._openTween then self._openTween:Cancel() end -- Cancels any in-progress opening tween so it does not override the closing animation.
 	local Blur = self.Camera:FindFirstChild("Blur") -- Searches the CurrentCamera for the active BlurEffect instance.
