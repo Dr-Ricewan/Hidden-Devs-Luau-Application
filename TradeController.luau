@@ -1,4 +1,9 @@
 --  "Connected Discord-GitHub" DiscordName: @Dr.Riz RobloxName: rizwan_pro
+
+-- NOTE: I realise this may be difficult for an application reader to test with in the place link as due to the nature of trading it would require 2 players.
+Subsequently I can provide a video showcase aswell if you DM my discord.
+This does not need to be used I only offer to provide it solely to the benefit and ease of the application reader.
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage") -- Retrieves the ReplicatedStorage service to access shared client-server modules, configurations, and network remotes.
 local Players = game:GetService("Players") -- Retrieves the Players service to manage player instances, user IDs, and fetch avatar thumbnails.
 local TweenService = game:GetService("TweenService") -- Retrieves the TweenService to procedurally interpolate UI properties for smooth animations.
