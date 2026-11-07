@@ -4,12 +4,6 @@
 --Subsequently I can provide a video showcase aswell if you DM my discord.
 --This does not need to be used I only offer to provide it solely to the benefit and ease of the application reader.
 
---[[
-
-loko
-
-]]--
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage") -- Retrieves the ReplicatedStorage service to access shared client-server modules, configurations, and network remotes.
 local Players = game:GetService("Players") -- Retrieves the Players service to manage player instances, user IDs, and fetch avatar thumbnails.
 local TweenService = game:GetService("TweenService") -- Retrieves the TweenService to procedurally interpolate UI properties for smooth animations.
